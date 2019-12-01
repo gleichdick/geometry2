@@ -62,17 +62,11 @@ template <>
 template <typename A, typename B>
 inline void Converter<false, true>::convert(const A& a, B& b)
 {
-  b = toMsg(a);
+  toMsg(a, b);
 }
 
-template <>
-template <typename A, typename B>
-inline void Converter<false, false>::convert(const A& a, B& b)
-{
-  fromMsg(toMsg(a), b);
-}
 
-}
-}
+} // namespace impl
+} // namespace tf2
 
 #endif //TF2_IMPL_CONVERT_H

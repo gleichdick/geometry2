@@ -84,10 +84,11 @@ template <class P>
  * implemented by each data type in tf2_* (except ROS messages) as it is
  * used in the "convert" function.
  * \param a an object of whatever type
- * \return the conversion as a ROS message
+ * \param b the ROS message to convert to
+ * \return Reference to parameter b
  */
 template<typename A, typename B>
-  B toMsg(const A& a);
+  B& toMsg(const A& a, B& b);
 
 /** Function that converts from a ROS message type to another type. It has to be
  * implemented by each data type in tf2_* (except ROS messages) as it is used
