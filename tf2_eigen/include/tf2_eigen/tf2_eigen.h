@@ -122,10 +122,10 @@ void doTransform(const Eigen::Vector3d& t_in, Eigen::Vector3d& t_out, const geom
  * \param in The timestamped Eigen Vector3d to convert.
  * \return The vector converted to a Point message.
  */
+template <>
 inline
-geometry_msgs::Point toMsg(const Eigen::Vector3d& in)
+geometry_msgs::Point& toMsg(const Eigen::Vector3d& in, geometry_msgs::Point& msg)
 {
-  geometry_msgs::Point msg;
   msg.x = in.x();
   msg.y = in.y();
   msg.z = in.z();
@@ -137,6 +137,7 @@ geometry_msgs::Point toMsg(const Eigen::Vector3d& in)
  * \param msg The Point message to convert.
  * \param out The point converted to a Eigen Vector3d.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::Point& msg, Eigen::Vector3d& out)
 {
@@ -150,6 +151,7 @@ void fromMsg(const geometry_msgs::Point& msg, Eigen::Vector3d& out)
  * \param in The Eigen Vector3d to convert.
  * \return The vector converted to a Vector3 message.
  */
+template <>
 inline
 geometry_msgs::Vector3& toMsg(const Eigen::Vector3d& in, geometry_msgs::Vector3& out)
 {
@@ -164,6 +166,7 @@ geometry_msgs::Vector3& toMsg(const Eigen::Vector3d& in, geometry_msgs::Vector3&
  * \param msg The Vector3 message to convert.
  * \param out The vector converted to a Eigen Vector3d.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::Vector3& msg, Eigen::Vector3d& out)
 {
@@ -193,13 +196,13 @@ void doTransform(const tf2::Stamped<Eigen::Vector3d>& t_in,
  * \param in The timestamped Eigen Vector3d to convert.
  * \return The vector converted to a PointStamped message.
  */
+template <>
 inline
-geometry_msgs::PointStamped toMsg(const tf2::Stamped<Eigen::Vector3d>& in)
+geometry_msgs::PointStamped& toMsg(const tf2::Stamped<Eigen::Vector3d>& in, geometry_msgs::PointStamped& msg)
 {
-  geometry_msgs::PointStamped msg;
   msg.header.stamp = in.stamp_;
   msg.header.frame_id = in.frame_id_;
-  msg.point = toMsg(static_cast<const Eigen::Vector3d&>(in));
+  toMsg(static_cast<const Eigen::Vector3d&>(in), msg.point);
   return msg;
 }
 
@@ -208,6 +211,7 @@ geometry_msgs::PointStamped toMsg(const tf2::Stamped<Eigen::Vector3d>& in)
  * \param msg The PointStamped message to convert.
  * \param out The point converted to a timestamped Eigen Vector3d.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::PointStamped& msg, tf2::Stamped<Eigen::Vector3d>& out) {
   out.stamp_ = msg.header.stamp;
@@ -245,9 +249,9 @@ void doTransform(const Eigen::Isometry3d& t_in,
  * \param in The Eigen Quaterniond to convert.
  * \return The quaternion converted to a Quaterion message.
  */
+template <>
 inline
-geometry_msgs::Quaternion toMsg(const Eigen::Quaterniond& in) {
- geometry_msgs::Quaternion msg;
+geometry_msgs::Quaternion& toMsg(const Eigen::Quaterniond& in, geometry_msgs::Quaternion& msg) {
  msg.w = in.w();
  msg.x = in.x();
  msg.y = in.y();
@@ -260,6 +264,7 @@ geometry_msgs::Quaternion toMsg(const Eigen::Quaterniond& in) {
  * \param msg The Quaternion message to convert.
  * \param out The quaternion converted to a Eigen Quaterniond.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::Quaternion& msg, Eigen::Quaterniond& out) {
   out = Eigen::Quaterniond(msg.w, msg.x, msg.y, msg.z);
@@ -289,12 +294,12 @@ void doTransform(const Eigen::Quaterniond& t_in,
  * \param in The timestamped Eigen Quaterniond to convert.
  * \return The quaternion converted to a QuaternionStamped message.
  */
+template <>
 inline
-geometry_msgs::QuaternionStamped toMsg(const Stamped<Eigen::Quaterniond>& in) {
-  geometry_msgs::QuaternionStamped msg;
+geometry_msgs::QuaternionStamped& toMsg(const Stamped<Eigen::Quaterniond>& in, geometry_msgs::QuaternionStamped& msg) {
   msg.header.stamp = in.stamp_;
   msg.header.frame_id = in.frame_id_;
-  msg.quaternion = toMsg(static_cast<const Eigen::Quaterniond&>(in));
+  toMsg(static_cast<const Eigen::Quaterniond&>(in), msg.quaternion);
   return msg;
 }
 
@@ -303,6 +308,7 @@ geometry_msgs::QuaternionStamped toMsg(const Stamped<Eigen::Quaterniond>& in) {
  * \param msg The QuaternionStamped message to convert.
  * \param out The quaternion converted to a timestamped Eigen Quaterniond.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::QuaternionStamped& msg, Stamped<Eigen::Quaterniond>& out) {
   out.frame_id_ = msg.header.frame_id;
@@ -331,9 +337,9 @@ void doTransform(const tf2::Stamped<Eigen::Quaterniond>& t_in,
  * \param in The Eigen Affine3d to convert.
  * \return The Eigen transform converted to a Pose message.
  */
+template <>
 inline
-geometry_msgs::Pose toMsg(const Eigen::Affine3d& in) {
-  geometry_msgs::Pose msg;
+geometry_msgs::Pose& toMsg(const Eigen::Affine3d& in, geometry_msgs::Pose& msg) {
   msg.position.x = in.translation().x();
   msg.position.y = in.translation().y();
   msg.position.z = in.translation().z();
@@ -356,9 +362,9 @@ geometry_msgs::Pose toMsg(const Eigen::Affine3d& in) {
  * \param in The Eigen Isometry3d to convert.
  * \return The Eigen transform converted to a Pose message.
  */
+template <>
 inline
-geometry_msgs::Pose toMsg(const Eigen::Isometry3d& in) {
-  geometry_msgs::Pose msg;
+geometry_msgs::Pose& toMsg(const Eigen::Isometry3d& in,geometry_msgs::Pose& msg ) {
   msg.position.x = in.translation().x();
   msg.position.y = in.translation().y();
   msg.position.z = in.translation().z();
@@ -381,6 +387,7 @@ geometry_msgs::Pose toMsg(const Eigen::Isometry3d& in) {
  * \param msg The Pose message to convert.
  * \param out The pose converted to a Eigen Affine3d.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::Pose& msg, Eigen::Affine3d& out) {
   out = Eigen::Affine3d(
@@ -396,6 +403,7 @@ void fromMsg(const geometry_msgs::Pose& msg, Eigen::Affine3d& out) {
  * \param msg The Pose message to convert.
  * \param out The pose converted to a Eigen Isometry3d.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::Pose& msg, Eigen::Isometry3d& out) {
   out = Eigen::Isometry3d(
@@ -411,9 +419,9 @@ void fromMsg(const geometry_msgs::Pose& msg, Eigen::Isometry3d& out) {
  * \param in The 6x1 Eigen Matrix to convert.
  * \return The Eigen Matrix converted to a Twist message.
  */
+template <>
 inline
-geometry_msgs::Twist toMsg(const Eigen::Matrix<double,6,1>& in) {
-  geometry_msgs::Twist msg;
+geometry_msgs::Twist& toMsg(const Eigen::Matrix<double,6,1>& in, geometry_msgs::Twist& msg) {
   msg.linear.x = in[0];
   msg.linear.y = in[1];
   msg.linear.z = in[2];
@@ -428,6 +436,7 @@ geometry_msgs::Twist toMsg(const Eigen::Matrix<double,6,1>& in) {
  * \param msg The Twist message to convert.
  * \param out The twist converted to a Eigen 6x1 Matrix.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::Twist &msg, Eigen::Matrix<double,6,1>& out) {
   out[0] = msg.linear.x;
@@ -477,23 +486,23 @@ void doTransform(const tf2::Stamped<Eigen::Isometry3d>& t_in,
  * \param in The timestamped Eigen Affine3d to convert.
  * \return The Eigen transform converted to a PoseStamped message.
  */
+template <>
 inline
-geometry_msgs::PoseStamped toMsg(const tf2::Stamped<Eigen::Affine3d>& in)
+geometry_msgs::PoseStamped& toMsg(const tf2::Stamped<Eigen::Affine3d>& in, geometry_msgs::PoseStamped& msg)
 {
-  geometry_msgs::PoseStamped msg;
   msg.header.stamp = in.stamp_;
   msg.header.frame_id = in.frame_id_;
-  msg.pose = toMsg(static_cast<const Eigen::Affine3d&>(in));
+  toMsg(static_cast<const Eigen::Affine3d&>(in), msg.pose);
   return msg;
 }
 
+template <>
 inline
-geometry_msgs::PoseStamped toMsg(const tf2::Stamped<Eigen::Isometry3d>& in)
+geometry_msgs::PoseStamped& toMsg(const tf2::Stamped<Eigen::Isometry3d>& in, geometry_msgs::PoseStamped& msg)
 {
-  geometry_msgs::PoseStamped msg;
   msg.header.stamp = in.stamp_;
   msg.header.frame_id = in.frame_id_;
-  msg.pose = toMsg(static_cast<const Eigen::Isometry3d&>(in));
+  toMsg(static_cast<const Eigen::Isometry3d&>(in), msg.pose);
   return msg;
 }
 
@@ -502,6 +511,7 @@ geometry_msgs::PoseStamped toMsg(const tf2::Stamped<Eigen::Isometry3d>& in)
  * \param msg The PoseStamped message to convert.
  * \param out The pose converted to a timestamped Eigen Affine3d.
  */
+template <>
 inline
 void fromMsg(const geometry_msgs::PoseStamped& msg, tf2::Stamped<Eigen::Affine3d>& out)
 {
@@ -510,6 +520,7 @@ void fromMsg(const geometry_msgs::PoseStamped& msg, tf2::Stamped<Eigen::Affine3d
   fromMsg(msg.pose, static_cast<Eigen::Affine3d&>(out));
 }
 
+template <>
 inline
 void fromMsg(const geometry_msgs::PoseStamped& msg, tf2::Stamped<Eigen::Isometry3d>& out)
 {
