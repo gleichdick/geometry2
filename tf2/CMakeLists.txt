@@ -9,9 +9,25 @@ catkin_package(
    INCLUDE_DIRS include
    LIBRARIES tf2
    DEPENDS console_bridge
-   CATKIN_DEPENDS geometry_msgs tf2_msgs rostime)
+   CATKIN_DEPENDS geometry_msgs tf2_msgs rostime geometry_msgs)
 
-include_directories(include ${catkin_INCLUDE_DIRS} ${console_bridge_INCLUDE_DIRS})
+
+# generate header cross_convert.h
+
+find_package(PythonInterp REQUIRED)
+
+set(TF2_CROSS_CONVERT_DIR "${CMAKE_CURRENT_BINARY_DIR}/include")
+file(MAKE_DIRECTORY ${TF2_CROSS_CONVERT_DIR})
+set(TF2_CROSS_CONVERT_HDR "${TF2_CROSS_CONVERT_DIR}/cross_convert.h")
+set(TF2_CROSS_CONVERT_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_cross_convert_h.py")
+add_custom_command(OUTPUT ${TF2_CROSS_CONVERT_HDR}
+  COMMAND ${PYTHON_EXECUTABLE} ARGS ${TF2_CROSS_CONVERT_SCRIPT} ${TF2_CROSS_CONVERT_HDR}
+  DEPENDS ${TF2_CROSS_CONVERT_SCRIPT}
+)
+add_custom_target(build_header ALL DEPENDS ${TF2_CROSS_CONVERT_HDR})
+install(FILES ${TF2_CROSS_CONVERT_HDR} DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}/impl/)
+
+include_directories(include "${CMAKE_CURRENT_BINARY_DIR}/include" ${catkin_INCLUDE_DIRS} ${console_bridge_INCLUDE_DIRS})
 
 # export user definitions
 
