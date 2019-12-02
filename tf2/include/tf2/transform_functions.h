@@ -99,6 +99,25 @@ template<typename A, typename B>
 template<typename A, typename B>
   void fromMsg(const A&, B& b);
 
+/** Helper struct which holds a common geometry_msgs type which can act as
+ * proxy to convert two non-message objects using `tf2::convert`.
+ * Say, you want to convert an \c Eigen::Vector3d to \c tf::Vector3.
+ * The methods <tt>template<> void fromMsg(const Eigen::Vector3d&, geometry_msgs::Vector3 &)</tt>
+ * and <tt>template<> tf2::Vector3& toMsg(const geometry_msgs::Vector3&, tf2::Vector3&)</tt>
+ * are implemented. So we specialise \c commonMsgType:
+ * \code
+ * template<>
+ * struct commonMsgType<Eigen::Vector3d, tf2::Vector3> {
+ *   using type = geometry_msgs::Vector3;
+ * };
+ * \endcode
+ * Now we can use \c tf2::convert().
+ */
+template <class A, class B>
+  struct commonMsgType{
+    using type = std::nullptr_t;
+  };
+
 }
 
 #endif //TF2_TRANSFORM_FUNCTIONS_H
