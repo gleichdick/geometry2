@@ -36,6 +36,7 @@
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3Stamped.h>
 
 
 namespace tf2
@@ -177,6 +178,37 @@ void fromMsg(const geometry_msgs::Vector3& msg, Eigen::Vector3d& out)
   out.y() = msg.y;
   out.z() = msg.z;
 }
+
+/** \brief Convert a stamped Eigen Vector3d type to a Vector3Stamped message.
+ * This function is a specialization of the toMsg template defined in tf2/transform_functions.h.
+ * \param in The timestamped Eigen Vector3d to convert.
+ * \param msg The vector converted to a Vector3Stamped message.
+ * \return Reference to \c msg parameter.
+ */
+template <>
+inline
+geometry_msgs::Vector3Stamped& toMsg(const tf2::Stamped<Eigen::Vector3d>& in, geometry_msgs::Vector3Stamped& msg)
+{
+  msg.header.stamp = in.stamp_;
+  msg.header.frame_id = in.frame_id_;
+  toMsg(static_cast<const Eigen::Vector3d&>(in), msg.vector);
+  return msg;
+}
+
+/** \brief Convert a Vector3Stamped message type to a stamped Eigen-specific Vector3d type.
+ * This function is a specialization of the fromMsg template defined in tf2/transform_functions.h
+ * \param msg The Vector3Stamped message to convert.
+ * \param out The point converted to a timestamped Eigen Vector3d.
+ */
+template <>
+inline
+void fromMsg(const geometry_msgs::Vector3Stamped& msg, tf2::Stamped<Eigen::Vector3d>& out) {
+  out.stamp_ = msg.header.stamp;
+  out.frame_id_ = msg.header.frame_id;
+  fromMsg(msg.vector, static_cast<Eigen::Vector3d&>(out));
+}
+
+
 
 /** \brief Apply a geometry_msgs TransformStamped to an Eigen-specific Vector3d type.
  * This function is a specialization of the doTransform template defined in tf2/transform_functions.h.
