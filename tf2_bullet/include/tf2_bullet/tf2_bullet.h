@@ -33,6 +33,7 @@
 #define TF2_BULLET_H
 
 #include <tf2/transform_functions.h>
+#include <tf2/transform_datatypes.h>
 #include <LinearMath/btTransform.h>
 #include <geometry_msgs/PointStamped.h>
 
