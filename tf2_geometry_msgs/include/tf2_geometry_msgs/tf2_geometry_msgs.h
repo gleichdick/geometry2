@@ -126,32 +126,6 @@ template <>
 inline
   const std::string& getFrameId(const geometry_msgs::Vector3Stamped& t) {return t.header.frame_id;}
 
-
-/** \brief Trivial "conversion" function for Vector3 message type.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param in A Vector3Stamped message.
- * \return The input argument.
- */
-template <>
-inline
-geometry_msgs::Vector3Stamped& toMsg(const geometry_msgs::Vector3Stamped& in, geometry_msgs::Vector3Stamped& out)
-{
-  out = in;
-  return out;
-}
-
-/** \brief Trivial "conversion" function for Vector3 message type.
- * This function is a specialization of the fromMsg template defined in tf2/convert.h.
- * \param msg A Vector3Stamped message.
- * \param out The input argument.
- */
-template <>
-inline
-void fromMsg(const geometry_msgs::Vector3Stamped& msg, geometry_msgs::Vector3Stamped& out)
-{
-  out = msg;
-}
-
 /** \brief Convert as stamped tf2 Vector3 type to its equivalent geometry_msgs representation.
  * This function is a specialization of the toMsg template defined in tf2/convert.h.
  * \param in An instance of the tf2::Vector3 specialization of the tf2::Stamped template.
@@ -239,31 +213,6 @@ inline
 template <>
 inline
   const std::string& getFrameId(const geometry_msgs::PointStamped& t)  {return t.header.frame_id;}
-
-/** \brief Trivial "conversion" function for Point message type.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param in A PointStamped message.
- * \return The input argument.
- */
-template <>
-inline
-geometry_msgs::PointStamped& toMsg(const geometry_msgs::PointStamped& in, geometry_msgs::PointStamped& out)
-{
-  out = in;
-  return out;
-}
-
-/** \brief Trivial "conversion" function for Point message type.
- * This function is a specialization of the fromMsg template defined in tf2/convert.h.
- * \param msg A PointStamped message.
- * \param out The input argument.
- */
-template <>
-inline
-void fromMsg(const geometry_msgs::PointStamped& msg, geometry_msgs::PointStamped& out)
-{
-  out = msg;
-}
 
 /** \brief Convert as stamped tf2 Vector3 type to its equivalent geometry_msgs representation.
  * This function is a specialization of the toMsg template defined in tf2/convert.h.
@@ -355,31 +304,6 @@ template <>
 inline
 const std::string& getFrameId(const geometry_msgs::QuaternionStamped& t)  {return t.header.frame_id;}
 
-/** \brief Trivial "conversion" function for Quaternion message type.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param in A QuaternionStamped message.
- * \return The input argument.
- */
-template <>
-inline
-geometry_msgs::QuaternionStamped& toMsg(const geometry_msgs::QuaternionStamped& in, geometry_msgs::QuaternionStamped& out)
-{
-  out = in;
-  return out;
-}
-
-/** \brief Trivial "conversion" function for Quaternion message type.
- * This function is a specialization of the fromMsg template defined in tf2/convert.h.
- * \param msg A QuaternionStamped message.
- * \param out The input argument.
- */
-template <>
-inline
-void fromMsg(const geometry_msgs::QuaternionStamped& msg, geometry_msgs::QuaternionStamped& out)
-{
-  out = msg;
-}
-
 /** \brief Convert as stamped tf2 Quaternion type to its equivalent geometry_msgs representation.
  * This function is a specialization of the toMsg template defined in tf2/convert.h.
  * \param in An instance of the tf2::Quaternion specialization of the tf2::Stamped template.
@@ -469,31 +393,6 @@ template <>
 inline
   const std::string& getFrameId(const geometry_msgs::PoseStamped& t)  {return t.header.frame_id;}
 
-/** \brief Trivial "conversion" function for Pose message type.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param in A PoseStamped message.
- * \return The input argument.
- */
-template <>
-inline
-geometry_msgs::PoseStamped& toMsg(const geometry_msgs::PoseStamped& in, geometry_msgs::PoseStamped& out)
-{
-  out = in;
-  return out;
-}
-
-/** \brief Trivial "conversion" function for Pose message type.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param msg A PoseStamped message.
- * \param out The input argument.
- */
-template <>
-inline
-void fromMsg(const geometry_msgs::PoseStamped& msg, geometry_msgs::PoseStamped& out)
-{
-  out = msg;
-}
-
 /** \brief Convert as stamped tf2 Pose type to its equivalent geometry_msgs representation.
  * This function is a specialization of the toMsg template defined in tf2/convert.h.
  * \param in An instance of the tf2::Pose specialization of the tf2::Stamped template.
@@ -546,31 +445,6 @@ inline
 template <>
 inline
   const std::string& getFrameId(const geometry_msgs::PoseWithCovarianceStamped& t)  {return t.header.frame_id;}
-
-/** \brief Trivial "conversion" function for PoseWithCovarianceStamped message type.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param in A PoseWithCovarianceStamped message.
- * \return The input argument.
- */
-template <>
-inline
-geometry_msgs::PoseWithCovarianceStamped& toMsg(const geometry_msgs::PoseWithCovarianceStamped& in, geometry_msgs::PoseWithCovarianceStamped& out)
-{
-  out = in;
-  return out;
-}
-
-/** \brief Trivial "conversion" function for PoseWithCovarianceStamped message type.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param msg A PoseWithCovarianceStamped message.
- * \param out The input argument.
- */
-template <>
-inline
-void fromMsg(const geometry_msgs::PoseWithCovarianceStamped& msg, geometry_msgs::PoseWithCovarianceStamped& out)
-{
-  out = msg;
-}
 
 /** \brief Convert as stamped tf2 PoseWithCovarianceStamped type to its equivalent geometry_msgs representation.
  * This function is a specialization of the toMsg template defined in tf2/convert.h.
@@ -661,31 +535,6 @@ const ros::Time& getTimestamp(const geometry_msgs::TransformStamped& t)  {return
 template <>
 inline
 const std::string& getFrameId(const geometry_msgs::TransformStamped& t)  {return t.header.frame_id;}
-
-/** \brief Trivial "conversion" function for Transform message type.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param in A TransformStamped message.
- * \return The input argument.
- */
-template <>
-inline
-geometry_msgs::TransformStamped& toMsg(const geometry_msgs::TransformStamped& in, geometry_msgs::TransformStamped& out)
-{
-  out = in;
-  return out;
-}
-
-/** \brief Convert a TransformStamped message to its equivalent tf2 representation.
- * This function is a specialization of the toMsg template defined in tf2/convert.h.
- * \param msg A TransformStamped message type.
- * \param out The TransformStamped converted to the equivalent tf2 type.
- */
-template <>
-inline
-void fromMsg(const geometry_msgs::TransformStamped& msg, geometry_msgs::TransformStamped& out)
-{
-  out = msg;
-}
 
 /** \brief Convert as stamped tf2 Transform type to its equivalent geometry_msgs representation.
  * This function is a specialization of the toMsg template defined in tf2/convert.h.
@@ -1002,20 +851,6 @@ const ros::Time& getTimestamp(const geometry_msgs::WrenchStamped& t) {return t.h
 template <>
 inline
 const std::string& getFrameId(const geometry_msgs::WrenchStamped& t) {return t.header.frame_id;}
-
-
-inline
-geometry_msgs::WrenchStamped& toMsg(const geometry_msgs::WrenchStamped& in, geometry_msgs::WrenchStamped& out)
-{
-  out = in;
-  return out;
-}
-
-inline
-void fromMsg(const geometry_msgs::WrenchStamped& msg, geometry_msgs::WrenchStamped& out)
-{
-  out = msg;
-}
 
 
 inline
