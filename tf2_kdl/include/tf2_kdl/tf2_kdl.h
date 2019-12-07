@@ -33,6 +33,7 @@
 #define TF2_KDL_H
 
 #include <tf2/transform_functions.h>
+#include <tf2/transform_datatypes.h>
 #include <kdl/frames.hpp>
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/TwistStamped.h>
@@ -89,7 +90,8 @@ inline
 /** \brief Convert a stamped KDL Vector type to a PointStamped message.
  * This function is a specialization of the toMsg template defined in tf2/transform_functions.h.
  * \param in The timestamped KDL Vector to convert.
- * \return The vector converted to a PointStamped message.
+ * \param msg The vector converted to a PointStamped message.
+ * \return Reference to \c msg parameter.
  */
 template <>
 inline
@@ -138,7 +140,8 @@ inline
 /** \brief Convert a stamped KDL Twist type to a TwistStamped message.
  * This function is a specialization of the toMsg template defined in tf2/transform_functions.h.
  * \param in The timestamped KDL Twist to convert.
- * \return The twist converted to a TwistStamped message.
+ * \param msg The twist converted to a TwistStamped message.
+ * \return Reference to \c msg parameter.
  */
 template <>
 inline
@@ -194,7 +197,8 @@ inline
 /** \brief Convert a stamped KDL Wrench type to a WrenchStamped message.
  * This function is a specialization of the toMsg template defined in tf2/transform_functions.h.
  * \param in The timestamped KDL Wrench to convert.
- * \return The wrench converted to a WrenchStamped message.
+ * \param msg The wrench converted to a WrenchStamped message.
+ * \return Reference to \c msg parameter.
  */
 template <>
 inline
@@ -252,7 +256,8 @@ inline
 /** \brief Convert a stamped KDL Frame type to a Pose message.
  * This function is a specialization of the toMsg template defined in tf2/transform_functions.h.
  * \param in The timestamped KDL Frame to convert.
- * \return The frame converted to a Pose message.
+ * \param msg The frame converted to a Pose message.
+ * \return Reference to \c msg parameter.
  */
 template <>
 inline
@@ -283,7 +288,8 @@ void fromMsg(const geometry_msgs::Pose& msg, KDL::Frame& out)
 /** \brief Convert a stamped KDL Frame type to a Pose message.
  * This function is a specialization of the toMsg template defined in tf2/transform_functions.h.
  * \param in The timestamped KDL Frame to convert.
- * \return The frame converted to a PoseStamped message.
+ * \param msg The frame converted to a PoseStamped message.
+ * \return Reference to \c msg parameter.
  */
 template <>
 inline
