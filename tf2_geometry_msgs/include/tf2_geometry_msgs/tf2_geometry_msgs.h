@@ -137,9 +137,7 @@ geometry_msgs::Vector3Stamped& toMsg(const tf2::Stamped<tf2::Vector3>& in, geome
 {
   out.header.stamp = in.stamp_;
   out.header.frame_id = in.frame_id_;
-  out.vector.x = in.getX();
-  out.vector.y = in.getY();
-  out.vector.z = in.getZ();
+  toMsg(static_cast<const tf2::Vector3&>(in), out.vector);
   return out;
 }
 
@@ -154,7 +152,7 @@ void fromMsg(const geometry_msgs::Vector3Stamped& msg, tf2::Stamped<tf2::Vector3
 {
   out.stamp_ = msg.header.stamp;
   out.frame_id_ = msg.header.frame_id;
-  out.setData(tf2::Vector3(msg.vector.x, msg.vector.y, msg.vector.z));
+  fromMsg(msg.vector, static_cast<tf2::Vector3 &>(out));
 }
 
 
@@ -225,9 +223,7 @@ geometry_msgs::PointStamped& toMsg(const tf2::Stamped<tf2::Vector3>& in, geometr
 {
   out.header.stamp = in.stamp_;
   out.header.frame_id = in.frame_id_;
-  out.point.x = in.getX();
-  out.point.y = in.getY();
-  out.point.z = in.getZ();
+  toMsg(static_cast<const tf2::Vector3 &>(in), out.point);
   return out;
 }
 
@@ -242,7 +238,7 @@ void fromMsg(const geometry_msgs::PointStamped& msg, tf2::Stamped<tf2::Vector3>&
 {
   out.stamp_ = msg.header.stamp;
   out.frame_id_ = msg.header.frame_id;
-  out.setData(tf2::Vector3(msg.point.x, msg.point.y, msg.point.z));
+  fromMsg(msg.point, static_cast<tf2::Vector3 &>(out));
 }
 
 
@@ -315,10 +311,7 @@ geometry_msgs::QuaternionStamped& toMsg(const tf2::Stamped<tf2::Quaternion>& in,
 {
   out.header.stamp = in.stamp_;
   out.header.frame_id = in.frame_id_;
-  out.quaternion.w = in.getW();
-  out.quaternion.x = in.getX();
-  out.quaternion.y = in.getY();
-  out.quaternion.z = in.getZ();
+  toMsg(static_cast<const tf2::Quaternion&>(in), out.quaternion);
   return out;
 }
 
@@ -333,9 +326,7 @@ void fromMsg(const geometry_msgs::QuaternionStamped& in, tf2::Stamped<tf2::Quate
 {
   out.stamp_ = in.header.stamp;
   out.frame_id_ = in.header.frame_id;
-  tf2::Quaternion tmp;
-  fromMsg(in.quaternion, tmp);
-  out.setData(tmp);
+  fromMsg(in.quaternion, static_cast<tf2::Quaternion&>(out));
 }
 
 
@@ -419,9 +410,7 @@ void fromMsg(const geometry_msgs::PoseStamped& msg, tf2::Stamped<tf2::Transform>
 {
   out.stamp_ = msg.header.stamp;
   out.frame_id_ = msg.header.frame_id;
-  tf2::Transform tmp;
-  fromMsg(msg.pose, tmp);
-  out.setData(tmp);
+  fromMsg(msg.pose, static_cast<tf2::Transform&>(out));
 }
 
 /*******************************/
@@ -472,9 +461,7 @@ void fromMsg(const geometry_msgs::PoseWithCovarianceStamped& msg, tf2::Stamped<t
 {
   out.stamp_ = msg.header.stamp;
   out.frame_id_ = msg.header.frame_id;
-  tf2::Transform tmp;
-  fromMsg(msg.pose, tmp);
-  out.setData(tmp);
+  fromMsg(msg.pose, static_cast<tf2::Transform&>(out));
 }
 
 /***************/
@@ -563,9 +550,7 @@ void fromMsg(const geometry_msgs::TransformStamped& msg, tf2::Stamped<tf2::Trans
 {
   out.stamp_ = msg.header.stamp;
   out.frame_id_ = msg.header.frame_id;
-  tf2::Transform tmp;
-  fromMsg(msg.transform, tmp);
-  out.setData(tmp);
+  fromMsg(msg.transform, static_cast<tf2::Transform&>(out));
 }
 
 /** \brief Apply a geometry_msgs TransformStamped to an geometry_msgs Point type.
