@@ -39,6 +39,7 @@
 #include <tf2_kdl/tf2_kdl.h>
 #include <tf2_bullet/tf2_bullet.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_eigen/tf2_eigen.h>
 #include <ros/time.h>
 
 TEST(tf2Convert, kdlToBullet)
@@ -95,7 +96,41 @@ TEST(tf2Convert, kdlBulletROSConversions)
   EXPECT_NEAR(b1.x(), b4.x(), epsilon);
   EXPECT_NEAR(b1.y(), b4.y(), epsilon);
   EXPECT_NEAR(b1.z(), b4.z(), epsilon);
-} 
+}
+
+TEST(tf2Convert, PoseStampedConversions) {
+  double epsilon = 1e-9;
+
+  const tf2::Stamped<tf2::Transform> p_tf2_1(tf2::Transform(tf2::Quaternion(1.0,0.0,0.0,2.0), tf2::Vector3(1,2,3)), ros::Time(), "my_frame");
+  tf2::Stamped<tf2::Transform> p_tf2_2;
+  geometry_msgs::PoseStamped msg;
+  tf2::toMsg(p_tf2_1, msg);
+
+  tf2::Stamped<Eigen::Isometry3d> p_e_iso;
+  tf2::Stamped<Eigen::Affine3d> p_e_aff;
+  tf2::Stamped<KDL::Frame> p_f;
+
+  tf2::convert(p_tf2_1, p_e_iso);
+  tf2::convert(p_e_iso, p_f);
+  tf2::convert(p_f, p_e_aff);
+  tf2::convert(p_e_aff, p_tf2_2);
+
+  tf2::toMsg(p_e_aff, msg);
+
+  EXPECT_EQ(p_tf2_1.frame_id_, p_tf2_2.frame_id_);
+  EXPECT_NEAR(p_tf2_1.stamp_.toSec(), p_tf2_2.stamp_.toSec(), epsilon);
+
+  const auto& q1(p_tf2_1.getRotation()), q2(p_tf2_2.getRotation());
+  EXPECT_NEAR(q1.x(), q2.x(), epsilon);
+  EXPECT_NEAR(q1.y(), q2.y(), epsilon);
+  EXPECT_NEAR(q1.z(), q2.z(), epsilon);
+  EXPECT_NEAR(q1.w(), q2.w(), epsilon);
+
+  const auto& o1(p_tf2_1.getOrigin()), o2(p_tf2_2.getOrigin());
+  EXPECT_NEAR(o1.x(), o2.x(), epsilon);
+  EXPECT_NEAR(o1.y(), o2.y(), epsilon);
+  EXPECT_NEAR(o1.z(), o2.z(), epsilon);
+}
 
 int main(int argc, char** argv)
 {
