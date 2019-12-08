@@ -39,6 +39,7 @@ namespace impl {
 //checks whether (A and B) and (B and A) have no common type
 template<class A, class B>
   struct has_no_common_msgs : public std::integral_constant<bool,
+      std::is_same<typename tf2::UnidirectionalTypeMap<A, B>::type, std::nullptr_t>::value &&
       std::is_same<typename tf2::BidirectionalTypeMap<A, B>::type, std::nullptr_t>::value &&
       std::is_same<typename tf2::BidirectionalTypeMap<B, A>::type, std::nullptr_t>::value> {};
 
@@ -56,6 +57,16 @@ struct get_common_bidirectional_type<A, B, true> {
   using type = typename tf2::BidirectionalTypeMap<A, B>::type;
 };
 
+template<class A, class B, bool has_type>
+struct get_common_unidirectional_type{};
+
+template<class A, class B>
+struct get_common_unidirectional_type<A, B, false> {};
+
+template<class A, class B>
+struct get_common_unidirectional_type<A, B, true> {
+  using type = typename tf2::UnidirectionalTypeMap<A, B>::type;
+};
 } // namespace traits
 
 // get bidirectional common geometry_msgs type for (A and B)
@@ -63,6 +74,9 @@ struct get_common_bidirectional_type<A, B, true> {
 template<class A, class B>
 struct get_common_bidirectional_type : public traits::get_common_bidirectional_type<A, B,! std::is_same<typename tf2::BidirectionalTypeMap<A, B>::type, std::nullptr_t>::value> {};
 
+// get unidirectional common geometry_msgs type for (A and B)
+template<class A, class B>
+struct get_common_unidirectional_type : public traits::get_common_unidirectional_type<A, B,! std::is_same<typename tf2::UnidirectionalTypeMap<A, B>::type, std::nullptr_t>::value> {};
 
 // do three-way convert, look up common type for (A and B)
 template <class A, class B>
@@ -81,10 +95,20 @@ inline void convertViaMessage(const A& a, B& b,typename get_common_bidirectional
   fromMsg(toMsg(a, c), b);
 }
 
+// do three-way convert, look up common type for (A and B), unidirectional
+template <class A, class B>
+inline void convertViaMessage(const A& a, B& b,typename get_common_unidirectional_type<A, B>::type *c_ptr = nullptr)
+{
+  // SFINAE will bring the geometry_msgs type as third parameter, extract it
+  typename std::remove_pointer<decltype(c_ptr)>::type c;
+  fromMsg(toMsg(a, c), b);
+}
+
 // Print a nice message if no common type was defined
 template<class A, class B>
 void convertViaMessage(const A& a, B& b, typename std::enable_if<has_no_common_msgs<A, B>::value, void *>::type = nullptr) {
-  static_assert(! has_no_common_msgs<A, B>::value, "Please add a tf2::BidirectionalTypeMap specialisation for types A and B.");
+  static_assert(! has_no_common_msgs<A, B>::value,
+      "Please add a tf2::BidirectionalTypeMap or tf2::UnidirectionalTypeMap specialisation for types A and B.");
 }
 
 

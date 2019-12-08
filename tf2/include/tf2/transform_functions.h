@@ -120,6 +120,28 @@ template <class A, class B>
     using type = std::nullptr_t;
   };
 
+/** Helper struct which holds a common unidirectional geometry_msgs type which can act as
+ * proxy to convert two non-message objects using tf2::convert().
+ * Say, you want to convert an \c Eigen::Vector3d to \c tf2::Vector3.
+ * The methods <tt>template<> void fromMsg(const geometry_msgs::Vector3&, tf2::Vector3&)</tt>
+ * and <tt>template<> void geometry_msgs::Vector3&
+ * toMsg(const Eigen::Vector3d&, geometry_msgs::Vector3 &)</tt>
+ * are implemented, but the methods the other way around are missing.
+ * So we specialise \c UnidirectionalTypeMap:
+ * \code
+ * template<>
+ * struct UnidirectionalTypeMap<Eigen::Vector3d, tf2::Vector3> {
+ *   using type = geometry_msgs::Vector3;
+ * };
+ * \endcode
+ * Now we can use tf2::convert() to convert an \c Eigen::Vector3d to \c tf2::Vector3
+ * bot not to convert a \c tf2::Vector3 to \c Eigen::Vector3d.
+ */
+template <class A, class B>
+  struct UnidirectionalTypeMap{
+    using type = std::nullptr_t;
+  };
+
 }
 
 #endif //TF2_TRANSFORM_FUNCTIONS_H
