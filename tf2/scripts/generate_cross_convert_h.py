@@ -100,7 +100,7 @@ class CxxClass(CxxClassBase):
 
 class TypeMap(CxxClassBase):
     def __init__(self, msgs_name, class_a, class_b, namespace, stamped = False):
-        super(TypeMap, self).__init__("commonMsgType", namespace, stamped)
+        super(TypeMap, self).__init__("BidirectionalTypeMap", namespace, stamped)
         self._msgs_name = msgs_name
         if stamped:
             self._msgs_name += "Stamped"
@@ -122,7 +122,7 @@ class TypeMap(CxxClassBase):
             self._template.write_declaration(out_file)
         else:
             out_file.write("template<>\n")
-        out_file.write("struct commonMsgType<")
+        out_file.write("struct %s<" % self._name)
 
         self._write_class_name(out_file, 0)
         out_file.write(", ")
@@ -148,6 +148,12 @@ class TypeMap(CxxClassBase):
         return includes
 
 def TypeMapIterator(msgs_name, namespace, classes):
+    """
+Iterate pairwise over classes and create TypeMap for each pair.
+For example, for classes=[a, b, c, d] it yields [ Typemap(a,b), Typemap(a,c),
+Typemap(a,d), Typemap(b,c), Typemap(b,d), Typemap(c,d)].
+The stamped attribute of each class is honored.
+"""
     for i in range(0, len(classes)):
         for next_class in classes[i+1 : ]:
             is_stamped = next_class.compare_stamped(classes[i])

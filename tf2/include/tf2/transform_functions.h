@@ -99,22 +99,24 @@ template<typename A, typename B>
 template<typename A, typename B>
   void fromMsg(const A&, B& b);
 
-/** Helper struct which holds a common geometry_msgs type which can act as
- * proxy to convert two non-message objects using `tf2::convert`.
- * Say, you want to convert an \c Eigen::Vector3d to \c tf::Vector3.
- * The methods <tt>template<> void fromMsg(const Eigen::Vector3d&, geometry_msgs::Vector3 &)</tt>
- * and <tt>template<> tf2::Vector3& toMsg(const geometry_msgs::Vector3&, tf2::Vector3&)</tt>
- * are implemented. So we specialise \c commonMsgType:
+/** Helper struct which holds a common bidirectional geometry_msgs type which can act as
+ * proxy to convert two non-message objects using tf2::convert().
+ * Say, you want to convert an \c Eigen::Vector3d to \c tf2::Vector3.
+ * The methods <tt>template<> void fromMsg(const geometry_msgs::Vector3&, tf2::Vector3&)</tt>
+ * and <tt>template<> void geometry_msgs::Vector3&
+ * toMsg(const Eigen::Vector3d&, geometry_msgs::Vector3 &)</tt>
+ * are implemented, also with \c Eigen::Vector3d and \c tf2::Vector3 swapped.
+ * So we specialise \c BidirectionalTypeMap:
  * \code
  * template<>
- * struct commonMsgType<Eigen::Vector3d, tf2::Vector3> {
+ * struct BidirectionalTypeMap<Eigen::Vector3d, tf2::Vector3> {
  *   using type = geometry_msgs::Vector3;
  * };
  * \endcode
- * Now we can use \c tf2::convert().
+ * Now we can use tf2::convert() to convert back and forth.
  */
 template <class A, class B>
-  struct commonMsgType{
+  struct BidirectionalTypeMap{
     using type = std::nullptr_t;
   };
 
