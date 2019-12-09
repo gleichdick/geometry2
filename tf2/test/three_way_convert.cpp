@@ -141,6 +141,12 @@ struct get_uni_type_returns_type<A, B,
     void_t<typename tf2::impl::get_common_unidirectional_type<A,B>::type>>
 : std::true_type{};
 
+// helper to check whether error message would be shown with static_assert
+template<class A, class B>
+using would_show_error_msg = std::is_same<
+  decltype(tf2::impl::convertViaMessage<A,B>(std::declval<const A&>(), std::declval<B&>())),
+  tf2::impl::common_type_lookup_failed>;
+
 
 TEST(ThreeWayConvert, BidirectionalTypeMap) {
     // check raw structs
@@ -165,6 +171,8 @@ TEST(ThreeWayConvert, BidirectionalTypeMap) {
 
   EXPECT_FALSE((tf2::impl::has_no_common_msgs<Foo::Vec3, Bar::Vec3>::value));
   EXPECT_FALSE((tf2::impl::has_no_common_msgs<Bar::Vec3, Foo::Vec3>::value));
+
+  EXPECT_FALSE((would_show_error_msg<Foo::Vec3, Bar::Vec3>::value));
 
   const auto v1 = initVec<Foo::Vec3>();
   Foo::Vec3 v3;
@@ -207,6 +215,9 @@ TEST(ThreeWayConvert, UnidirectionalTypeMap) {
   EXPECT_FALSE((tf2::impl::has_no_common_msgs<Bar::Vec3, Baz::Vec3>::value));
   EXPECT_TRUE((tf2::impl::has_no_common_msgs<Baz::Vec3, Bar::Vec3>::value));
 
+  EXPECT_FALSE((would_show_error_msg<Bar::Vec3, Baz::Vec3>::value));
+  EXPECT_TRUE((would_show_error_msg<Baz::Vec3, Bar::Vec3>::value));
+
   const auto v1 = initVec<Bar::Vec3>();
   Baz::Vec3 v2;
 
@@ -240,6 +251,8 @@ TEST(ThreeWayConvert, UnrelatedTypes) {
   EXPECT_TRUE((tf2::impl::has_no_common_msgs<Foo::Quaternion, Bar::Quaternion>::value));
   EXPECT_TRUE((tf2::impl::has_no_common_msgs<Bar::Quaternion, Foo::Quaternion>::value));
 
+  EXPECT_TRUE((would_show_error_msg<Foo::Quaternion, Bar::Quaternion>::value));
+  EXPECT_TRUE((would_show_error_msg<Bar::Quaternion, Foo::Quaternion>::value));
 }
 
 int main(int argc, char **argv){

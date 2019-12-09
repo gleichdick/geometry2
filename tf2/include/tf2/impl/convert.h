@@ -104,11 +104,16 @@ inline void convertViaMessage(const A& a, B& b,typename get_common_unidirectiona
   fromMsg(toMsg(a, c), b);
 }
 
+struct common_type_lookup_failed : std::false_type {};
+
 // Print a nice message if no common type was defined
+// use custom return type to make the selection of this overload testable via decltype
 template<class A, class B>
-void convertViaMessage(const A& a, B& b, typename std::enable_if<has_no_common_msgs<A, B>::value, void *>::type = nullptr) {
+common_type_lookup_failed convertViaMessage(const A&, B&, typename std::enable_if<has_no_common_msgs<A, B>::value, void*>::type = nullptr)
+{
   static_assert(! has_no_common_msgs<A, B>::value,
       "Please add a tf2::BidirectionalTypeMap or tf2::UnidirectionalTypeMap specialisation for types A and B.");
+  return common_type_lookup_failed();
 }
 
 
