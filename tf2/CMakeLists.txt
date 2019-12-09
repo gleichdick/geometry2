@@ -5,13 +5,6 @@ find_package(console_bridge REQUIRED)
 find_package(catkin REQUIRED COMPONENTS geometry_msgs rostime tf2_msgs)
 find_package(Boost REQUIRED COMPONENTS system thread)
 
-catkin_package(
-   INCLUDE_DIRS include
-   LIBRARIES tf2
-   DEPENDS console_bridge
-   CATKIN_DEPENDS geometry_msgs tf2_msgs rostime geometry_msgs)
-
-
 # generate header cross_convert.h
 
 find_package(PythonInterp REQUIRED)
@@ -27,7 +20,14 @@ add_custom_command(OUTPUT ${TF2_CROSS_CONVERT_HDR}
 add_custom_target(build_header ALL DEPENDS ${TF2_CROSS_CONVERT_HDR})
 install(FILES ${TF2_CROSS_CONVERT_HDR} DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}/impl/)
 
-include_directories(include "${CMAKE_CURRENT_BINARY_DIR}/include" ${catkin_INCLUDE_DIRS} ${console_bridge_INCLUDE_DIRS})
+catkin_package(
+   INCLUDE_DIRS include ${TF2_CROSS_CONVERT_DIR}
+   LIBRARIES tf2
+   DEPENDS console_bridge
+   CATKIN_DEPENDS geometry_msgs tf2_msgs rostime geometry_msgs)
+
+
+include_directories(include ${TF2_CROSS_CONVERT_DIR} ${catkin_INCLUDE_DIRS} ${console_bridge_INCLUDE_DIRS})
 
 # export user definitions
 
