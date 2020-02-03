@@ -132,6 +132,53 @@ TEST(tf2Convert, PoseStampedConversions) {
   EXPECT_NEAR(o1.z(), o2.z(), epsilon);
 }
 
+TEST(tf2Convert, QuaternionStampedConversations)
+{
+  const double epsilon = 1e-9;
+  const tf2::Stamped<Eigen::Quaterniond> q_e_1(Eigen::Quaterniond(2.0, 4.0, 0.25, -1),
+                                               ros::Time(), "my_frame");
+  tf2::Stamped<tf2::Quaternion> q_tf_1;
+  tf2::convert(q_e_1, q_tf_1);
+
+  EXPECT_EQ(q_e_1.frame_id_, q_tf_1.frame_id_);
+  EXPECT_NEAR(q_e_1.stamp_.toSec(), q_tf_1.stamp_.toSec(), epsilon);
+  EXPECT_NEAR(q_e_1.x(), q_tf_1.x(), epsilon);
+  EXPECT_NEAR(q_e_1.y(), q_tf_1.y(), epsilon);
+  EXPECT_NEAR(q_e_1.z(), q_tf_1.z(), epsilon);
+  EXPECT_NEAR(q_e_1.w(), q_tf_1.w(), epsilon);
+
+  tf2::Stamped<Eigen::Quaterniond> q_e_2;
+  tf2::convert(q_tf_1, q_e_2);
+
+  EXPECT_EQ(q_e_2.frame_id_, q_tf_1.frame_id_);
+  EXPECT_NEAR(q_e_2.stamp_.toSec(), q_tf_1.stamp_.toSec(), epsilon);
+  EXPECT_NEAR(q_e_2.x(), q_tf_1.x(), epsilon);
+  EXPECT_NEAR(q_e_2.y(), q_tf_1.y(), epsilon);
+  EXPECT_NEAR(q_e_2.z(), q_tf_1.z(), epsilon);
+  EXPECT_NEAR(q_e_2.w(), q_tf_1.w(), epsilon);
+}
+
+TEST(tf2Convert, QuaternionConversations)
+{
+  const double epsilon = 1e-9;
+  const Eigen::Quaterniond q_e_1(2.0, 4.0, 0.25, -1);
+  tf2::Quaternion q_tf_1;
+  tf2::convert(q_e_1, q_tf_1);
+
+  EXPECT_NEAR(q_e_1.x(), q_tf_1.x(), epsilon);
+  EXPECT_NEAR(q_e_1.y(), q_tf_1.y(), epsilon);
+  EXPECT_NEAR(q_e_1.z(), q_tf_1.z(), epsilon);
+  EXPECT_NEAR(q_e_1.w(), q_tf_1.w(), epsilon);
+
+  Eigen::Quaterniond q_e_2;
+  tf2::convert(q_tf_1, q_e_2);
+
+  EXPECT_NEAR(q_e_2.x(), q_tf_1.x(), epsilon);
+  EXPECT_NEAR(q_e_2.y(), q_tf_1.y(), epsilon);
+  EXPECT_NEAR(q_e_2.z(), q_tf_1.z(), epsilon);
+  EXPECT_NEAR(q_e_2.w(), q_tf_1.w(), epsilon);
+}
+
 int main(int argc, char** argv)
 {
   testing::InitGoogleTest(&argc, argv);
