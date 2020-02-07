@@ -470,7 +470,7 @@ void fromMsg(const geometry_msgs::PoseWithCovarianceStamped& msg, tf2::Stamped<t
 {
   out.stamp_ = msg.header.stamp;
   out.frame_id_ = msg.header.frame_id;
-  fromMsg(msg.pose, static_cast<tf2::Transform&>(out));
+  fromMsg(msg.pose.pose, static_cast<tf2::Transform&>(out));
 }
 
 /***************/
