@@ -36,12 +36,28 @@
 #include <gtest/gtest.h>
 #include "tf2_ros/buffer.h"
 
+struct TfKDL : public ::testing::Test {
+  static void SetUpTestCase() {
+    tf_buffer = new tf2_ros::Buffer();
 
-tf2_ros::Buffer* tf_buffer;
+    geometry_msgs::TransformStamped t;
+    t.transform.translation.x = 10;
+    t.transform.translation.y = 20;
+    t.transform.translation.z = 30;
+    t.transform.rotation.x = 1;
+    t.header.stamp = ros::Time(2.0);
+    t.header.frame_id = "A";
+    t.child_frame_id = "B";
+    tf_buffer->setTransform(t, "test");
+  }
+  static void TearDownTestCase() { delete tf_buffer; }
+  static tf2_ros::Buffer *tf_buffer;
+};
+
+tf2_ros::Buffer* TfKDL::tf_buffer;
 static const double EPS = 1e-3;
 
-TEST(TfKDL, Frame)
-{
+TEST_F(TfKDL, Frame) {
   tf2::Stamped<KDL::Frame> v1(KDL::Frame(KDL::Rotation::RPY(M_PI, 0, 0), KDL::Vector(1,2,3)), ros::Time(2.0), "A");
 
 
@@ -67,13 +83,9 @@ TEST(TfKDL, Frame)
   EXPECT_NEAR(r, 0.0, EPS);
   EXPECT_NEAR(p, 0.0, EPS);
   EXPECT_NEAR(y, 0.0, EPS);
-
 }
 
-
-
-TEST(TfKDL, Vector)
-{
+TEST_F(TfKDL, Vector) {
   tf2::Stamped<KDL::Vector> v1(KDL::Vector(1,2,3), ros::Time(2.0), "A");
 
 
@@ -91,8 +103,7 @@ TEST(TfKDL, Vector)
   EXPECT_NEAR(v_advanced[2], 27, EPS);
 }
 
-TEST(TfKDL, ConvertVector)
-{
+TEST_F(TfKDL, ConvertVector) {
   tf2::Stamped<KDL::Vector> v(KDL::Vector(1,2,3), ros::Time(), "my_frame");
 
   tf2::Stamped<KDL::Vector> v1 = v;
@@ -113,20 +124,6 @@ int main(int argc, char **argv){
   ros::init(argc, argv, "test");
   ros::NodeHandle n;
 
-  tf_buffer = new tf2_ros::Buffer();
-
-  // populate buffer
-  geometry_msgs::TransformStamped t;
-  t.transform.translation.x = 10;
-  t.transform.translation.y = 20;
-  t.transform.translation.z = 30;
-  t.transform.rotation.x = 1;
-  t.header.stamp = ros::Time(2.0);
-  t.header.frame_id = "A";
-  t.child_frame_id = "B";
-  tf_buffer->setTransform(t, "test");
-
   int retval = RUN_ALL_TESTS();
-  delete tf_buffer;
   return retval;
 }

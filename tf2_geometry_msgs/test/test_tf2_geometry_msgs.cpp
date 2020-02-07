@@ -37,13 +37,33 @@
 #include <tf2_ros/buffer.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
-tf2_ros::Buffer* tf_buffer;
-geometry_msgs::TransformStamped t;
 static const double EPS = 1e-3;
 
+struct TfGeometry : public ::testing::Test {
+  static void SetUpTestCase() {
 
-TEST(TfGeometry, Frame)
-{
+    tf_buffer = new tf2_ros::Buffer();
+    tf_buffer->setUsingDedicatedThread(true);
+  }
+  static void TearDownTestCase() { delete tf_buffer; }
+  virtual void SetUp() override { tf_buffer->setTransform(t, "test"); }
+  static tf2_ros::Buffer *tf_buffer;
+  static const geometry_msgs::TransformStamped t;
+};
+
+const geometry_msgs::TransformStamped TfGeometry::t = []() {
+  geometry_msgs::TransformStamped t;
+  t.transform.translation.x = 10;
+  t.transform.translation.y = 20;
+  t.transform.translation.z = 30;
+  t.transform.rotation.x = 1;
+  t.header.stamp = ros::Time(2.0);
+  t.header.frame_id = "A";
+  t.child_frame_id = "B";
+  return t;
+}();
+
+TEST_F(TfGeometry, Frame) {
   geometry_msgs::PoseStamped v1;
   v1.pose.position.x = 1;
   v1.pose.position.y = 2;
@@ -74,8 +94,7 @@ TEST(TfGeometry, Frame)
   EXPECT_NEAR(v_advanced.pose.orientation.w, 1.0, EPS);
 }
 
-TEST(TfGeometry, PoseWithCovarianceStamped)
-{
+TEST_F(TfGeometry, PoseWithCovarianceStamped) {
   geometry_msgs::PoseWithCovarianceStamped v1;
   v1.pose.pose.position.x = 1;
   v1.pose.pose.position.y = 2;
@@ -157,11 +176,9 @@ TEST(TfGeometry, PoseWithCovarianceStamped)
   EXPECT_NEAR(v_rotated.pose.covariance[14], 1.0, EPS);
   
   // set buffer back to original transform
-  tf_buffer->setTransform(t, "test");
 }
-  
-TEST(TfGeometry, Transform)
-{
+
+TEST_F(TfGeometry, Transform) {
   geometry_msgs::TransformStamped v1;
   v1.transform.translation.x = 1;
   v1.transform.translation.y = 2;
@@ -193,8 +210,7 @@ TEST(TfGeometry, Transform)
   EXPECT_NEAR(v_advanced.transform.rotation.w, 1.0, EPS);
 }
 
-TEST(TfGeometry, Vector)
-{
+TEST_F(TfGeometry, Vector) {
   geometry_msgs::Vector3Stamped v1, res;
   v1.vector.x = 1;
   v1.vector.y = 2;
@@ -216,9 +232,7 @@ TEST(TfGeometry, Vector)
   EXPECT_NEAR(v_advanced.vector.z, -3, EPS);
 }
 
-
-TEST(TfGeometry, Point)
-{
+TEST_F(TfGeometry, Point) {
   geometry_msgs::PointStamped v1, res;
   v1.point.x = 1;
   v1.point.y = 2;
@@ -240,8 +254,7 @@ TEST(TfGeometry, Point)
   EXPECT_NEAR(v_advanced.point.z, 27, EPS);
 }
 
-TEST(TfGeometry, doTransformPoint)
-{
+TEST_F(TfGeometry, doTransformPoint) {
   geometry_msgs::Point v1, res;
   v1.x = 2;
   v1.y = 1;
@@ -260,8 +273,7 @@ TEST(TfGeometry, doTransformPoint)
   EXPECT_NEAR(res.z, 0, EPS);
 }
 
-TEST(TfGeometry, doTransformQuaterion)
-{
+TEST_F(TfGeometry, doTransformQuaterion) {
   geometry_msgs::Quaternion v1, res;
   v1.w = 1;
 
@@ -279,8 +291,7 @@ TEST(TfGeometry, doTransformQuaterion)
   EXPECT_NEAR(res.w, trafo.transform.rotation.w, EPS);
 }
 
-TEST(TfGeometry, doTransformPose)
-{
+TEST_F(TfGeometry, doTransformPose) {
   geometry_msgs::Pose v1, res;
   v1.position.x = 2;
   v1.position.y = 1;
@@ -305,8 +316,7 @@ TEST(TfGeometry, doTransformPose)
   EXPECT_NEAR(res.orientation.w, trafo.transform.rotation.w, EPS);
 }
 
-TEST(TfGeometry, doTransformVector3)
-{
+TEST_F(TfGeometry, doTransformVector3) {
   geometry_msgs::Vector3 v1, res;
   v1.x = 2;
   v1.y = 1;
@@ -325,56 +335,37 @@ TEST(TfGeometry, doTransformVector3)
   EXPECT_NEAR(res.z, 3, EPS);
 }
 
-TEST(TfGeometry, doTransformWrench)
-{
- geometry_msgs::Wrench v1, res;
- v1.force.x = 2;
- v1.force.y = 1;
- v1.force.z = 3;
- v1.torque.x = 2;
- v1.torque.y = 1;
- v1.torque.z = 3;
+TEST_F(TfGeometry, doTransformWrench) {
+  geometry_msgs::Wrench v1, res;
+  v1.force.x = 2;
+  v1.force.y = 1;
+  v1.force.z = 3;
+  v1.torque.x = 2;
+  v1.torque.y = 1;
+  v1.torque.z = 3;
 
- geometry_msgs::TransformStamped trafo;
- trafo.transform.translation.x = -1;
- trafo.transform.translation.y = 2;
- trafo.transform.translation.z = -3;
- tf2::toMsg(tf2::Quaternion(tf2::Vector3(0,0,1), -M_PI / 2.0), trafo.transform.rotation);
+  geometry_msgs::TransformStamped trafo;
+  trafo.transform.translation.x = -1;
+  trafo.transform.translation.y = 2;
+  trafo.transform.translation.z = -3;
+  tf2::toMsg(tf2::Quaternion(tf2::Vector3(0, 0, 1), -M_PI / 2.0),
+             trafo.transform.rotation);
 
- tf2::doTransform(v1, res, trafo);
- EXPECT_NEAR(res.force.x, 1, EPS);
- EXPECT_NEAR(res.force.y, -2, EPS);
- EXPECT_NEAR(res.force.z, 3, EPS);
+  tf2::doTransform(v1, res, trafo);
+  EXPECT_NEAR(res.force.x, 1, EPS);
+  EXPECT_NEAR(res.force.y, -2, EPS);
+  EXPECT_NEAR(res.force.z, 3, EPS);
 
- EXPECT_NEAR(res.torque.x, 1, EPS);
- EXPECT_NEAR(res.torque.y, -2, EPS);
- EXPECT_NEAR(res.torque.z, 3, EPS);
+  EXPECT_NEAR(res.torque.x, 1, EPS);
+  EXPECT_NEAR(res.torque.y, -2, EPS);
+  EXPECT_NEAR(res.torque.z, 3, EPS);
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   ros::init(argc, argv, "test");
   ros::NodeHandle n;
 
-  tf_buffer = new tf2_ros::Buffer();
-  tf_buffer->setUsingDedicatedThread(true);
-  
-  // populate buffer
-  t.transform.translation.x = 10;
-  t.transform.translation.y = 20;
-  t.transform.translation.z = 30;
-  t.transform.rotation.x = 1;
-  t.header.stamp = ros::Time(2.0);
-  t.header.frame_id = "A";
-  t.child_frame_id = "B";
-  tf_buffer->setTransform(t, "test");
-
   int ret = RUN_ALL_TESTS();
-  delete tf_buffer;
   return ret;
 }
-
-
-
-
-
